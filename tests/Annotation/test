@@ -1,0 +1,18 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://orangehrm.qedgetech.com/symfony/web/index.php/admin/viewSystemUsers');
+  await page.getByText('Username').click();
+  await page.locator('#txtUsername').fill('Admin');
+  await page.locator('#txtUsername').press('Tab');
+  await page.locator('#txtPassword').fill('Qedge123!@#');
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
+  await page.locator('#menu_admin_viewAdminModule').click();
+  await page.getByRole('link', { name: 'PIM' }).click();
+  await page.getByRole('link', { name: 'Time' }).click();
+  await page.getByRole('link', { name: 'Recruitment' }).click();
+  await page.getByRole('link', { name: 'My Info' }).click();
+  await expect(page.getByText('User Management Users Job Job')).toBeVisible();
+  await page.getByRole('link', { name: 'PIM' }).click();
+  await page.getByRole('link', { name: 'Time' }).click();
+});

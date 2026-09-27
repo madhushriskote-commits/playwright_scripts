@@ -1,0 +1,125 @@
+Handling listbox or drop downs
+====================================================
+1.static listbox - options in listbox will never change
+2.dynamic listbox- options will change
+two way of listboxes
+1.listbox having <select> html tag
+2.listbox having div,ul html tags(non select listboxes)
+1.listbox having <select> html tag
+1.identify listbox having select html tag
+ inside select tag items will be stored into <option> tag
+2.to select options in listbox we need to use selectOptions()
+<select id="country" name="country">
+            <option value="AF">Afghanistan</option>
+            <option value="AX">Aland Islands</option>
+            <option value="AL">Albania</option>
+            <option value="DZ">Algeria</option>
+            <option value="AS">American Samoa</option>
+            </select>
+-----------------------------------------------------------------------
+how to select options in listbox
+1.values it is default method
+await page.locator('').selectOption('Albania')
+2.label
+await page.locator('').selectOption({label:'Algeria'})
+3.value
+await page.locator('').selectOption({value:'AS'})
+4.index 
+await page.locator('').selectOption({index:0}) index starts from 0,1,2,3..
+Note : the above methods are used only for listbox having <select> html tag
+--------------------------------------------------------------------------------
+script to select optins in listbox using values,label,value and index using selectoption method
+----------------------------------------------------------------------------------------
+import test, { expect } from "@playwright/test";
+test('Handling select listbox',async({page})=>{
+    await page.goto('https://qa-practice.netlify.app/register')
+    await page.waitForTimeout(3000)
+    //select option with values
+    await page.locator('#countries_dropdown_menu').selectOption('Anguilla')
+    await page.waitForTimeout(3000)
+    //select option using label
+    await page.locator('#countries_dropdown_menu').selectOption({label:'India'})
+     await page.waitForTimeout(3000)
+     //select optin using value
+     await page.locator('#countries_dropdown_menu').selectOption({value:'Libya'})
+     //assert expecte value
+     await expect(page.locator('#countries_dropdown_menu')).toHaveValue('Libya')
+    await page.waitForTimeout(3000)
+    //select optin using index
+    await page.locator('#countries_dropdown_menu').selectOption({index:30})
+     await page.waitForTimeout(3000)
+
+})
+-----------------------------------------
+https://www.ebay.com/
+Task write above scripts
+----------------------------------------------------------------
+selecting options in multi listbox
+------------------------------------------------
+how to select options in multilistbox
+-------------------------------------------
+1.values it is default method
+await page.locator('').selectOption(['Albania','',''])
+2.label
+await page.locator('').selectOption([{label:'Algeria'},{label:''}])
+3.value
+await page.locator('').selectOption([{value:'AS'},{value:''}])
+4.index 
+await page.locator('').selectOption([{index:0},{index:2}]) index starts from 0,1,2,3..
+-----------------------------------------------------------------------------------------
+script to select options in multidrop listbox using index,values and label and values
+------------------------------------------------------------------------------------
+import test from "@playwright/test";
+test('Handling Multi Dropdown',async({page})=>{
+    await page.goto('file:///D:/MultiListboxHtmlpage.html')
+    await page.waitForTimeout(3000)
+    //select optins in listbox using default values
+    await page.locator("[name='multiSelection']").selectOption(['silver','purple','Yellow'])
+     await page.waitForTimeout(3000)
+     //select options using label
+     await page.locator("[name='multiSelection']").selectOption([{label:'Blue'},{label:'navy blue'}])
+     await page.waitForTimeout(3000)
+     //select options using value
+     await page.locator("[name='multiSelection']").selectOption([{value:'white'},{value:'black'}])
+     await page.waitForTimeout(3000)
+     //select options using index
+     await page.locator("[name='multiSelection']").selectOption([{index:4},{index:0},{index:3}])
+     await page.waitForTimeout(3000)
+     
+})
+----------------------------------------------------------------------------------------
+Script to count no of optins and print each option name
+-----------------------------------------------------------------------------------------
+import test from "@playwright/test";
+test('Counting Options in listbox',async({page})=>{
+    await page.goto('https://qa-practice.netlify.app/register')
+    await page.waitForTimeout(3000)
+    //store listbox 
+    const Listbox = page.locator('#countries_dropdown_menu')
+    //get alloptions from listbox which are in <option> html tag
+    const all_Options = await Listbox.locator('option')
+    //count no of option in listbox
+    const countoptions = await all_Options.all()
+    console.log(`No of options are:: ${countoptions.length}`)
+    // for (const element of countoptions) {
+    //     //get each option text
+    //     const optiontext = await element.textContent()
+    //     console.log(`Name of Each option ${optiontext?.trim()}`)
+    //  }
+    for (const key in countoptions) {
+        const element =countoptions[key]
+        const optintext = await (await element.innerText()).trim()
+        console.log(`${key}:${optintext}`)
+       }
+
+})
+
+
+
+
+
+
+
+
+
+

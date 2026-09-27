@@ -1,0 +1,85 @@
+import test from "@playwright/test";
+test('Handling non select listbox',async({page})=>{
+    await page.goto('https://gmail.com')
+    await page.waitForTimeout(3000)
+    await page.locator("div[jsname='oYxtQd']").click()
+    await page.locator("div[jsname='oYxtQd']").waitFor({state:'visible'})
+    await page.locator("div[jsname='xl07Ob'] ul li:nth-child(7)").click()
+    await page.waitForTimeout(3000)
+    page.locator("div[jsname='oYxtQd']").click()
+    const allOptions = await page.locator("div[jsname='xl07Ob'] ul li").all()
+    console.log(`No of Items in listbox: ${allOptions.length}`)
+    // for (const element of allOptions) {
+    //     const ItemsText =  await element.textContent()
+    //     console.log(`${ItemsText}`)
+  
+    // }
+    for (const key in allOptions) {
+        const element = allOptions[key];
+        console.log(`${await element.textContent()}:::${key}`)
+     }
+})
+-----------------------------------------------------------------------------------
+
+import test, { expect } from "@playwright/test";
+test("handling alert",async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/javascript_alerts')
+    await page.waitForTimeout(3000)
+    //create dialog listerner
+    page.on('dialog',async (dialog)=>{
+        //return type of alert
+        const alertytpe = dialog.type()
+        console.log(`Type Of Alert is::${alertytpe}`)
+        //return alert message
+        const alertMessage = dialog.message()
+        console.log(`Alert Message is::${alertMessage}`)
+        await page.waitForTimeout(4000)
+        //click ok in alert
+        dialog.accept()
+    })
+    await page.getByText('Click for JS Alert').click()
+    await page.waitForTimeout(4000)
+    const webtext = await page.locator('#result').textContent()
+    console.log(webtext)
+    await expect(page.locator('#result')).toContainText(/You successfully clicked/)
+    await page.waitForTimeout(4000)
+
+})
+-----------------------------------------------------------------------------------------
+test('Handling confirm',async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/javascript_alerts')
+    await page.waitForTimeout(3000)
+    page.on('dialog',async(dialog)=>{
+        const alerttype = dialog.type()
+        console.log(`Alert type:: ${alerttype}`)
+        const alertmessage = dialog.message()
+        console.log(`Alert message is:: ${alertmessage}`)
+        await page.waitForTimeout(4000)
+        dialog.dismiss()
+    })
+
+    await page.getByText('Click for JS Confirm').click()
+    const webtext = await page.locator('#result').innerText()
+    console.log(webtext)
+    await expect(page.locator('#result')).toBeVisible()
+ await page.waitForTimeout(4000)
+})
+---------------------------------------------------------------------------------------------
+test('Handling Prompt',async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/javascript_alerts')
+    await page.waitForTimeout(3000)
+    page.on('dialog',async(dialog)=>{
+        const alerttype = dialog.type()
+        console.log(`Alert type:: ${alerttype}`)
+        const alertmessage = dialog.message()
+        console.log(`alert message is:: ${alertmessage}`)
+        await page.waitForTimeout(4000)
+        //enter text
+        dialog.accept('Akhilesh')
+    })
+    await page.getByText('Click for JS Prompt').click()
+    const webtext = await page.locator('#result').textContent()
+    console.log(webtext)
+    await expect(page.locator('#result')).toHaveText(/You entered:/)
+    await page.waitForTimeout(4000)
+})

@@ -1,0 +1,157 @@
+Handling check boxes and radio buttons
+------------------------------------------------------------------
+Methods:
+1.Click() used to select radio buttons are checkboxes
+await page.locator('').click()
+2.check()used to select radio buttons are checkboxes
+await page.locator('').check()
+3.uncheck()used to uncheck radio buttons are checkboxes
+await page.locator('').uncheck()
+4.isChecked()it check check box or radio button selected or not returns true if they are checked or returns false if not checked
+it return type is boolean
+ const element = await page.locator('');
+const status:boolean =element.isChecked()
+-------------------------------------------------------
+Assert for checkboxes and radio buttons
+1.toBeChecked() it assert checkbox or radio button id checked or not
+await expect(page.locator('')).toBeChecked()
+2.not.toBeChecked() it assert checkbox or radio button should be checked
+await expect(page.locator('')).not.toBeChecked()
+--------------------------------------------------------------------------
+import test, { expect, Locator } from "@playwright/test";
+
+test('Handling checkbox',async({page})=>{
+    await page.goto('https://mail.rediff.com/cgi-bin/login.cgi')
+    await page.waitForTimeout(3000)
+    //assert check box to bechecked
+    await expect(page.locator('#remember')).toBeChecked()
+    //verify checkbox is checked or unchecked 
+    const checkbox:Locator = page.locator('#remember')
+    const status:boolean = await checkbox.isChecked()
+    console.log(`check box status is:${status}`)
+    //uncheck from selection
+    await checkbox.uncheck()
+    await page.waitForTimeout(3000)
+    //assert checkbox not be checked
+    await expect(checkbox).not.toBeChecked()
+    //check check box
+    await checkbox.check()
+    await page.waitForTimeout(3000)
+
+})
+-------------------------------------------------------------------------
+test('Handling Radio buttons',async({page})=>{
+    await page.goto('https://qa-practice.netlify.app/radiobuttons')
+    await page.waitForTimeout(4000)
+    //verify radio button is checked or not
+    const radio_status:boolean = await page.locator('#radio-button1').isChecked()
+    console.log(`First Radio button status is:${radio_status}`)
+    //verify radio button is enabled or not
+    const radio_diabled:boolean = await page.locator('#radio-button4').isDisabled()
+    console.log(`Radio button disabled is:${radio_diabled}`)
+    //verify radio button is checked or not
+    const radio_status1:boolean = await page.locator('#radio-button3').isChecked()
+    console.log(`Third  Radio button status is:${radio_status1}`)
+
+
+
+})
+
+-----------------------------------------------------------------------------------
+import test, { Locator } from "@playwright/test";
+test('Counting checkboxes',async({page})=>{
+    await page.goto('file:///D:/checkbox_1.html')
+    await page.waitForTimeout(3000)
+    //store all checkboxes into one varibale
+    const all_Checkboxes :Locator = page.locator("input[type='checkbox']")
+    //count no of checkeboxes
+    const check_Count = await all_Checkboxes.count()
+    console.log(`No of checkboxes are:${check_Count}`)
+    //iterate all checkboxes
+    for(let i=0;i<check_Count;i++)
+    {
+        //verify each checkbox status
+        const eachcheckbox_status:boolean =await all_Checkboxes.nth(i).isChecked()
+        //get each checkbox name from collection
+        const eachcheckName  = await all_Checkboxes.nth(i).getAttribute('value')
+        console.log(`${eachcheckName}:: ${eachcheckbox_status}`)
+        if(eachcheckbox_status)
+        {
+            await all_Checkboxes.nth(i).uncheck()
+        }
+        else{
+            await all_Checkboxes.nth(i).check()
+        }
+        await page.waitForTimeout(4000)
+    }
+})
+-----------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+Working with Actions
+------------------------------------------------------------------------------
+1.hover() it is used to mouse hover to any element in webpage
+await page.locator('').hover()
+2.dblclick() it is used to double click element in webpage
+await page.locator('').dblclick()
+await page.locator('').click({clickCount:2})
+3.rightclick() to right click element we need to use click method
+await page.locator('').click({button:'right'})
+4.dragTo() to drag source into target
+5.scrollIntoViewIfNeeded() by default playwright has ability to scroll to any element in webpage
+------------------------------------------------------------------------------------------------------
+KeyBoard methods in playWright
+--------------------------------------------------------------------------
+await page.keyboard.press('Enter');
+await page.keyboard.press('Tab');
+await page.keyboard.press('ArrowDown');
+await page.keyboard.press('ArrowUp');
+await page.keyboard.press('ArrowLeft');
+await page.keyboard.press('ArrowRight');
+await page.keyboard.press('Escape');
+await page.keyboard.press('Backspace');
+await page.keyboard.press('Delete');
+await page.keyboard.down('Control');
+await page.keyboard.press('A');
+await page.keyboard.up('Control');
+await page.keyboard.type('Playwright Testing');
+await page.keyboard.insertText('Hello World');
+
+--------------------------------------------------------------------------------
+import test, { expect } from "@playwright/test";
+
+test('Handling mouse hover',async({page})=>{
+    await page.goto('https://www.spicejet.com/')
+    await page.waitForTimeout(3000)
+    await page.getByText('Add-ons',{exact:true}).first().hover()
+    const webtext :string = await page.getByTestId('test-id-Extra Seat').innerText()
+    console.log(webtext)
+    await expect(page.getByTestId('test-id-Extra Seat')).toBeVisible()
+    await page.waitForTimeout(3000)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
